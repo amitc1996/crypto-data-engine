@@ -1,63 +1,128 @@
 
+import {
+  BriefcaseBusiness,
+  Play,
+  CheckCircle2,
+  XCircle,
+  Database,
+  HardDrive,
+  Network,
+  ChartNoAxesColumn,
+} from "lucide-react";
+
+import StatsCard from "@/features/dashboard/components/StatsCard";
+import ThroughputChart from "@/features/dashboard/components/ThroughputChart";
+import RecentJobs from "@/features/dashboard/components/RecentJobs";
+
+import { dashboardData } from "@/mocks/dashboard";
+
 export default function DashboardPage() {
+  const { stats, throughput, recentJobs } = dashboardData;
+
+
+const cards = [
+  {
+    title: "Total Jobs",
+    value: stats.totalJobs,
+    icon: BriefcaseBusiness,
+    color: "blue" as const,
+    description: "All ingestion jobs",
+    footer: "Across all exchanges",
+  },
+  {
+    title: "Running",
+    value: stats.runningJobs,
+    icon: Play,
+    color: "green" as const,
+    description: "Active ingestion tasks",
+    footer: "Currently processing",
+    live: true,
+  },
+  {
+    title: "Completed",
+    value: stats.completedJobs,
+    icon: CheckCircle2,
+    color: "purple" as const,
+    description: "Successfully finished",
+    footer: "Completed ingestion jobs",
+  },
+  {
+    title: "Failed",
+    value: stats.failedJobs,
+    icon: XCircle,
+    color: "red" as const,
+    description: "Requires attention",
+    footer: "Jobs requiring investigation",
+  },
+  {
+    title: "Total Rows",
+    value: `${(stats.totalRows / 1_000_000).toFixed(1)}M`,
+    icon: Database,
+    color: "blue" as const,
+    description: "Historical candles",
+    footer: "Total records ingested",
+  },
+  {
+    title: "Data Size",
+    value: `${stats.dataSizeGB} GB`,
+    icon: HardDrive,
+    color: "purple" as const,
+    description: "Stored market data",
+    footer: "ClickHouse storage",
+  },
+  {
+    title: "Exchanges",
+    value: stats.exchanges,
+    icon: Network,
+    color: "yellow" as const,
+    description: "Configured exchanges",
+    footer: "Binance, Bybit, OKX, Coinbase",
+  },
+  {
+    title: "Symbols",
+    value: stats.symbols,
+    icon: ChartNoAxesColumn,
+    color: "green" as const,
+    description: "Market pairs tracked",
+    footer: "Across supported exchanges",
+  },
+];
+
+
   return (
     <div className="space-y-6">
 
-      {/* Page Heading */}
-      <div>
-        <h1 className="text-2xl font-bold text-white">
-          Dashboard Overview
-        </h1>
+      {/* Dashboard Stats */}
+      
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((card) => (
+          <StatsCard
+            key={card.title}
+            title={card.title}
+            value={card.value}
+            icon={card.icon}
+            color={card.color}
+            description={card.description}
+            footer={card.footer}
+            live={card.live}
+          />
+        ))}
+      </section>
 
-        <p className="mt-2 text-sm text-slate-400">
-          Welcome to Go Crypto Historical Data Engine
-        </p>
-      </div>
 
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {/* Analytics Section */}
+      <section className="grid grid-cols-1 items-start gap-6 xl:grid-cols-3">
 
-        {/* Total Jobs */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
-          <p className="text-sm text-slate-400">
-            Total Jobs
-          </p>
-          <h2 className="mt-3 text-3xl font-bold text-white">
-            0
-          </h2>
+        <div className="min-w-0 xl:col-span-2">
+          <ThroughputChart data={throughput} />
         </div>
 
-        {/* Running Jobs */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
-          <p className="text-sm text-slate-400">
-            Running Jobs
-          </p>
-          <h2 className="mt-3 text-3xl font-bold text-blue-400">
-            0
-          </h2>
+        <div className="min-w-0">
+          <RecentJobs jobs={recentJobs} />
         </div>
 
-        {/* Completed Jobs */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
-          <p className="text-sm text-slate-400">
-            Completed Jobs
-          </p>
-          <h2 className="mt-3 text-3xl font-bold text-green-400">
-            0
-          </h2>
-        </div>
+      </section>
 
-        {/* Failed Jobs */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
-          <p className="text-sm text-slate-400">
-            Failed Jobs
-          </p>
-          <h2 className="mt-3 text-3xl font-bold text-red-400">
-            0
-          </h2>
-        </div>
-
-      </div>
     </div>
   );
 }
