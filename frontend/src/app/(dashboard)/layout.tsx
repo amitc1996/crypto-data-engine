@@ -1,6 +1,8 @@
 
 import type { ReactNode } from "react";
+
 import Sidebar from "@/components/layout/Sidebar";
+import Header from "@/components/layout/Header";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -16,11 +18,7 @@ export default function DashboardLayout({
 
       <div className="flex min-w-0 flex-1 flex-col">
 
-        <header className="flex h-16 items-center border-b border-slate-800 px-6">
-          <h1 className="text-lg font-semibold">
-            Go Crypto Historical Data Engine
-          </h1>
-        </header>
+        <Header />
 
         <main className="flex-1 p-6">
           {children}
