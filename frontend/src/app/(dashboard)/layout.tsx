@@ -1,5 +1,6 @@
 
 import type { ReactNode } from "react";
+import Sidebar from "@/components/layout/Sidebar";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -11,22 +12,16 @@ export default function DashboardLayout({
   return (
     <div className="flex min-h-screen bg-slate-950 text-white">
 
-      {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 p-6">
-        <h2 className="text-xl font-bold">
-          Crypto Engine
-        </h2>
-      </aside>
+      <Sidebar />
 
-      {/* Main Content */}
-      <div className="flex flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col">
 
-        {/* Header */}
-        <header className="border-b border-slate-800 p-6">
-          <h1>Go Crypto Historical Data Engine</h1>
+        <header className="flex h-16 items-center border-b border-slate-800 px-6">
+          <h1 className="text-lg font-semibold">
+            Go Crypto Historical Data Engine
+          </h1>
         </header>
 
-        {/* Dashboard Page */}
         <main className="flex-1 p-6">
           {children}
         </main>
