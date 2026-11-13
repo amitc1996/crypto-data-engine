@@ -41,16 +41,6 @@ const menuItems = [
     href: "/monitoring",
     icon: Activity,
   },
-  {
-    label: "Exchanges",
-    href: "/exchanges",
-    icon: Server,
-  },
-  {
-    label: "ClickHouse Settings",
-    href: "/settings/clickhouse",
-    icon: Settings,
-  },
 ];
 
 export default function Sidebar() {

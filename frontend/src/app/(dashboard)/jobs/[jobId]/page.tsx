@@ -1,6 +1,14 @@
 
+import { Suspense } from "react";
+import { notFound } from "next/navigation";
+
+import JobDetails from "@/features/jobs/components/JobDetails";
+import { mockJobDetails } from "@/mocks/job-details";
+
 interface JobDetailsPageProps {
-  params: Promise<{ jobId: string }>;
+  params: Promise<{
+    jobId: string;
+  }>;
 }
 
 export default async function JobDetailsPage({
@@ -8,24 +16,20 @@ export default async function JobDetailsPage({
 }: JobDetailsPageProps) {
   const { jobId } = await params;
 
+  // Only job 128 has full mock details for now.
+  if (jobId !== mockJobDetails.id) {
+    notFound();
+  }
+
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">
-        Job #{jobId}
-      </h1>
-
-      <p className="text-slate-400">
-        Ingestion job details and live progress
-      </p>
-
-      <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
-        <h2 className="font-semibold">
-          Job Overview
-        </h2>
-        <p className="mt-2 text-sm text-slate-400">
-          Progress, logs and configuration will appear here.
+    <Suspense
+      fallback={
+        <p className="text-sm text-slate-400">
+          Loading job details...
         </p>
-      </div>
-    </div>
+      }
+    >
+      <JobDetails job={mockJobDetails} />
+    </Suspense>
   );
 }
