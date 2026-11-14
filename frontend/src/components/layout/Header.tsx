@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { DatabaseZap, Activity, Terminal } from "lucide-react";
+import { DatabaseZap, Activity } from "lucide-react";
 
 export default function Header() {
   const [utcTime, setUtcTime] = useState<string>("");
