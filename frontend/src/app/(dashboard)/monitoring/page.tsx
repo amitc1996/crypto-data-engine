@@ -1,10 +1,5 @@
-
-import MonitoringDashboard from "@/features/monitoring/components/MonitoringDashboard";
-
-import { mockMonitoringData } from "@/mocks/monitoring";
+import { redirect } from "next/navigation";
 
 export default function MonitoringPage() {
-  return (
-    <MonitoringDashboard data={mockMonitoringData} />
-  );
+  redirect("/dashboard");
 }

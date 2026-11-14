@@ -1,4 +1,3 @@
-
 import { z } from "zod";
 
 export const createJobSchema = z
@@ -26,30 +25,39 @@ export const createJobSchema = z
       "1d",
     ]),
 
-    startDate: z.iso.date(),
-    endDate: z.iso.date(),
+    startDate: z.string().min(1, "Please select a start date"),
+    endDate: z.string().min(1, "Please select an end date"),
 
     concurrency: z.coerce
-      .number<number>()
+      .number()
       .int()
-      .min(1)
-      .max(16),
+      .min(1, "Concurrency must be at least 1")
+      .max(16, "Concurrency cannot exceed 16"),
 
     resume: z.boolean(),
   })
   .refine(
-    (data) => data.startDate <= data.endDate,
+    (data) => {
+      if (!data.startDate || !data.endDate) return true;
+      return data.startDate <= data.endDate;
+    },
     {
       path: ["endDate"],
       message: "End date must be after or equal to start date",
     }
   )
   .refine(
-    (data) =>
-      data.endDate <= new Date().toISOString().slice(0, 10),
+    (data) => {
+      if (!data.endDate) return true;
+      // Allow dates up to 2 days ahead to prevent timezone / UTC discrepancies
+      const maxAllowed = new Date(Date.now() + 86400000 * 2)
+        .toISOString()
+        .slice(0, 10);
+      return data.endDate <= maxAllowed;
+    },
     {
       path: ["endDate"],
-      message: "Future dates are not allowed",
+      message: "Future dates beyond current period are not allowed",
     }
   )
   .refine(

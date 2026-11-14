@@ -1,6 +1,6 @@
-
 "use client";
 
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   useForm,
@@ -13,6 +13,7 @@ import {
   CalendarRange,
   Cpu,
   Plus,
+  AlertCircle,
 } from "lucide-react";
 
 import { useJobsStore } from "@/stores/jobs.store";
@@ -51,10 +52,27 @@ const inputClass =
 const labelClass =
   "mb-2 block text-xs font-medium text-slate-300";
 
-export default function CreateJobForm() {
+interface CreateJobFormProps {
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}
+
+export default function CreateJobForm({
+  onSuccess,
+  onCancel,
+}: CreateJobFormProps = {}) {
   const router = useRouter();
 
   const addJob = useJobsStore((state) => state.addJob);
+  const currentJobs = useJobsStore((state) => state.jobs);
+
+  const defaultDates = useMemo(() => {
+    const now = new Date();
+    const end = now.toISOString().slice(0, 10);
+    const startObj = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+    const start = startObj.toISOString().slice(0, 10);
+    return { start, end };
+  }, []);
 
   const {
     register,
@@ -73,8 +91,8 @@ export default function CreateJobForm() {
       marketType: "spot",
       symbol: "BTCUSDT",
       interval: "1m",
-      startDate: "2026-01-01",
-      endDate: "2026-10-31",
+      startDate: defaultDates.start,
+      endDate: defaultDates.end,
       concurrency: 4,
       resume: true,
     },
@@ -91,8 +109,15 @@ export default function CreateJobForm() {
   }) ?? 4;
 
   function onSubmit(data: CreateJobFormValues) {
+    // Generate sequential ID matching #128, #129...
+    const maxNumericId = currentJobs.reduce((max, j) => {
+      const n = parseInt(j.id, 10);
+      return !isNaN(n) && n > max ? n : max;
+    }, 128);
+    const nextId = String(maxNumericId + 1);
+
     const job: IngestionJob = {
-      id: crypto.randomUUID(),
+      id: nextId,
       exchange: exchangeNames[data.exchange],
       symbol: data.symbol,
       interval: data.interval,
@@ -106,14 +131,29 @@ export default function CreateJobForm() {
 
     addJob(job);
 
-    router.push("/jobs");
+    if (onSuccess) {
+      onSuccess();
+    } else {
+      router.push("/jobs");
+    }
   }
+
+  const hasErrors = Object.keys(errors).length > 0;
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmit, (formErrors) => {
+        console.warn("Validation failed for create job:", formErrors);
+      })}
       className="max-w-4xl space-y-5"
     >
+      {hasErrors && (
+        <div className="flex items-center gap-2 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3.5 text-xs font-medium text-rose-400">
+          <AlertCircle size={16} className="shrink-0" />
+          <span>Please review and fix the highlighted fields below.</span>
+        </div>
+      )}
+
       {/* Data Source */}
       <section className="rounded-xl border border-slate-800 bg-slate-900 p-5">
         <h2 className="mb-5 flex items-center gap-2 text-base font-semibold text-white">
@@ -122,7 +162,6 @@ export default function CreateJobForm() {
         </h2>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-
           <div>
             <label htmlFor="exchange" className={labelClass}>
               Exchange
@@ -214,7 +253,6 @@ export default function CreateJobForm() {
               <option value="1d">1 Day</option>
             </select>
           </div>
-
         </div>
       </section>
 
@@ -282,7 +320,7 @@ export default function CreateJobForm() {
           </label>
 
           <span className="rounded-lg bg-violet-500/10 px-3 py-1 text-sm font-semibold text-violet-400">
-            {concurrency}
+            {String(concurrency)}
           </span>
         </div>
 
@@ -292,13 +330,18 @@ export default function CreateJobForm() {
           min={1}
           max={16}
           step={1}
-          {...register("concurrency")}
+          {...register("concurrency", { valueAsNumber: true })}
           className="w-full accent-violet-600"
         />
 
+        {errors.concurrency && (
+          <p className="mt-1 text-xs text-rose-400">
+            {errors.concurrency.message}
+          </p>
+        )}
+
         <p className="mt-2 text-xs text-slate-500">
-          Maximum requested workers. The Go backend will
-          enforce exchange rate limits.
+          Maximum requested workers. The Go backend will enforce exchange rate limits.
         </p>
 
         <label className="mt-5 flex items-center gap-3 text-sm text-slate-300">
@@ -312,10 +355,16 @@ export default function CreateJobForm() {
       </section>
 
       {/* Actions */}
-      <div className="flex justify-end gap-3">
+      <div className="flex justify-end gap-3 pt-2">
         <button
           type="button"
-          onClick={() => router.push("/jobs")}
+          onClick={() => {
+            if (onCancel) {
+              onCancel();
+            } else {
+              router.push("/jobs");
+            }
+          }}
           className="rounded-lg border border-slate-700 px-5 py-2.5 text-sm text-slate-300 hover:bg-slate-800"
         >
           Cancel

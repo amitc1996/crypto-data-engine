@@ -1,5 +1,5 @@
 
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
@@ -14,7 +14,9 @@ export default function DashboardLayout({
   return (
     <div className="flex min-h-screen bg-slate-950 text-white">
 
-      <Sidebar />
+      <Suspense fallback={<aside className="w-64 shrink-0 border-r border-slate-800 bg-slate-900" />}>
+        <Sidebar />
+      </Suspense>
 
       <div className="flex min-w-0 flex-1 flex-col">
 

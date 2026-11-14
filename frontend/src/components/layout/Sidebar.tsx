@@ -7,17 +7,13 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   ListTodo,
-  PlusCircle,
   Database,
-  Activity,
-  Settings,
-  Server,
   ChevronRight,
 } from "lucide-react";
 
 const menuItems = [
   {
-    label: "Dashboard",
+    label: "Overview",
     href: "/dashboard",
     icon: LayoutDashboard,
   },
@@ -27,19 +23,9 @@ const menuItems = [
     icon: ListTodo,
   },
   {
-    label: "Create Job",
-    href: "/jobs/new",
-    icon: PlusCircle,
-  },
-  {
     label: "Data Viewer",
     href: "/data",
     icon: Database,
-  },
-  {
-    label: "Monitoring",
-    href: "/monitoring",
-    icon: Activity,
   },
 ];
 
@@ -48,8 +34,6 @@ export default function Sidebar() {
 
   return (
     <aside className="flex min-h-screen w-64 shrink-0 flex-col border-r border-slate-800 bg-slate-900">
-
-      {/* Logo */}
       <div className="border-b border-slate-800 p-6">
         <h2 className="text-xl font-bold text-white">
           Crypto Engine
@@ -59,17 +43,13 @@ export default function Sidebar() {
           Historical Data Platform
         </p>
       </div>
-
-      {/* Navigation */}
       <nav className="flex-1 space-y-2 p-4">
         {menuItems.map((item) => {
           const Icon = item.icon;
 
           const isActive =
             pathname === item.href ||
-            (item.href === "/jobs" &&
-              pathname.startsWith("/jobs/") &&
-              pathname !== "/jobs/new");
+            (item.href === "/jobs" && pathname.startsWith("/jobs/"));
 
           return (
             <Link
@@ -91,8 +71,6 @@ export default function Sidebar() {
           );
         })}
       </nav>
-
-      {/* Footer */}
       <div className="border-t border-slate-800 p-4">
         <p className="text-xs text-slate-500">
           Go Crypto Data Engine

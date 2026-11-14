@@ -1,9 +1,7 @@
-
 "use client";
 
-import { useEffect } from "react";
-import Link from "next/link";
-
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Plus,
   BriefcaseBusiness,
@@ -13,14 +11,34 @@ import {
 } from "lucide-react";
 
 import JobsTable from "@/features/jobs/components/JobsTable";
+import CreateJobDrawer from "@/features/jobs/components/CreateJobDrawer";
 import { useJobsStore } from "@/stores/jobs.store";
 
-export default function JobsPage() {
+function JobsContent() {
   const jobs = useJobsStore((state) => state.jobs);
+  const searchParams = useSearchParams();
+
+  const isParamTriggered =
+    searchParams.get("new") === "true" ||
+    searchParams.get("create") === "true";
+
+  const [isManualOpen, setIsManualOpen] = useState(false);
+  const [isParamDismissed, setIsParamDismissed] = useState(false);
+
+  const isCreateOpen = (isParamTriggered && !isParamDismissed) || isManualOpen;
 
   useEffect(() => {
     void useJobsStore.persist.rehydrate();
   }, []);
+
+  function handleOpen() {
+    setIsManualOpen(true);
+  }
+
+  function handleClose() {
+    setIsManualOpen(false);
+    setIsParamDismissed(true);
+  }
 
   const summary = [
     {
@@ -57,17 +75,18 @@ export default function JobsPage() {
             Ingestion Jobs
           </h1>
           <p className="mt-1 text-sm text-slate-400">
-            Manage historical data ingestion jobs
+            Manage historical data migration and backfill tasks
           </p>
         </div>
 
-        <Link
-          href="/jobs/new"
-          className="flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-violet-700"
+        <button
+          type="button"
+          onClick={handleOpen}
+          className="flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-violet-700 transition-colors"
         >
           <Plus size={18} />
           Create Job
-        </Link>
+        </button>
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -97,9 +116,28 @@ export default function JobsPage() {
       <JobsTable jobs={jobs} />
 
       <p className="text-xs text-slate-500">
-        Local demo jobs only. Backend execution is not
-        connected yet.
+        Local demo jobs only. Backend execution is not connected yet.
       </p>
+
+      {/* Slide-over Create Job Drawer */}
+      <CreateJobDrawer
+        isOpen={isCreateOpen}
+        onClose={handleClose}
+      />
     </div>
+  );
+}
+
+export default function JobsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="p-8 text-center text-sm text-slate-400">
+          Loading ingestion jobs...
+        </div>
+      }
+    >
+      <JobsContent />
+    </Suspense>
   );
 }
