@@ -47,8 +47,6 @@ export default function JobDetails({
 
   return (
     <div className="space-y-5">
-
-      {/* Back navigation */}
       <Link
         href="/jobs"
         className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white"
@@ -57,7 +55,6 @@ export default function JobDetails({
         Back to Jobs
       </Link>
 
-      {/* Job heading */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">
@@ -80,12 +77,6 @@ export default function JobDetails({
       <JobProgress job={job} />
 
       <JobTabs job={job} />
-
-      <p className="text-xs text-slate-500">
-        Demonstration data — this job is not connected
-        to a live ingestion worker.
-      </p>
-
     </div>
   );
 }

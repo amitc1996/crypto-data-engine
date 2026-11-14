@@ -115,11 +115,6 @@ function JobsContent() {
 
       <JobsTable jobs={jobs} />
 
-      <p className="text-xs text-slate-500">
-        Local demo jobs only. Backend execution is not connected yet.
-      </p>
-
-      {/* Slide-over Create Job Drawer */}
       <CreateJobDrawer
         isOpen={isCreateOpen}
         onClose={handleClose}

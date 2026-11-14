@@ -17,7 +17,7 @@ import { dashboardData } from "@/mocks/dashboard";
 import { mockMonitoringData } from "@/mocks/monitoring";
 
 export default function DashboardPage() {
-  const { stats, throughput, recentJobs } = dashboardData;
+  const { stats, recentJobs } = dashboardData;
 
   const cards = [
     {
@@ -90,7 +90,6 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">
@@ -102,7 +101,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Dashboard Stats */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((card) => (
           <StatsCard
@@ -119,7 +117,7 @@ export default function DashboardPage() {
       </section>
 
       <section className="grid grid-cols-1 items-start gap-6 xl:grid-cols-3">
-        <div className="space-y-6 min-w-0 xl:col-span-2">
+        <div className="min-w-0 xl:col-span-2">
           <EngineHealth monitoring={mockMonitoringData} />
         </div>
 

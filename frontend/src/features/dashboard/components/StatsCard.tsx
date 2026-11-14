@@ -45,6 +45,7 @@ export default function StatsCard({
   icon: Icon,
   color = "purple",
   live = false,
+  footer,
 }: StatsCardProps) {
   const styles = colorStyles[color];
 
@@ -68,12 +69,18 @@ export default function StatsCard({
         </h2>
 
         {live && (
-          <span className="flex items-center gap-1 text-[10px] text-green-400">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-400" />
+          <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-400">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
             Live
           </span>
         )}
       </div>
+
+      {footer && (
+        <p className="mt-1.5 truncate text-[11px] text-slate-400">
+          {footer}
+        </p>
+      )}
     </div>
   );
 }
