@@ -40,7 +40,7 @@ export const useJobsStore = create<JobsStore>()(
         })),
     }),
     {
-      name: "crypto-engine-demo-jobs",
+      name: "crypto-engine-jobs",
       skipHydration: true,
     }
   )

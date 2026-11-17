@@ -1,16 +1,15 @@
-
 import type { DashboardData } from "@/types/dashboard";
 
 export const dashboardData: DashboardData = {
   stats: {
-    totalJobs: 12,
-    runningJobs: 3,
-    completedJobs: 8,
-    failedJobs: 1,
-    totalRows: 126400000,
-    dataSizeGB: 842,
-    exchanges: 4,
-    symbols: 24,
+    totalJobs: 1,
+    runningJobs: 1,
+    completedJobs: 0,
+    failedJobs: 0,
+    totalRows: 2400000,
+    dataSizeGB: 0.14,
+    exchanges: 1,
+    symbols: 1,
   },
 
   throughput: [
@@ -28,28 +27,7 @@ export const dashboardData: DashboardData = {
       symbol: "BTCUSDT",
       exchange: "Binance",
       status: "running",
-      progress: 67.4,
-    },
-    {
-      id: 127,
-      symbol: "ETHUSDT",
-      exchange: "Bybit",
-      status: "completed",
-      progress: 100,
-    },
-    {
-      id: 126,
-      symbol: "SOLUSDT",
-      exchange: "OKX",
-      status: "completed",
-      progress: 100,
-    },
-    {
-      id: 125,
-      symbol: "BTC-USD",
-      exchange: "Coinbase",
-      status: "failed",
-      progress: 35,
+      progress: 72,
     },
   ],
 };
